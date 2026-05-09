@@ -37,7 +37,7 @@ A clean, fully responsive web app to browse and view **Class 10-C practical file
 3. Source: `main` branch → `/ (root)`
 4. Save — your site will be live at:
    ```
-   https://YOUR-USERNAME.github.io/YOUR-REPO-NAME
+   https://aaqiftechexplorer.github.io/-Class_10-C_Practical
    ```
 
 ---
