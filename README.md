@@ -6,7 +6,7 @@ A clean, fully responsive web app to browse and view **Class 10-C practical file
 
 ## 🔗 Live Demo
 
-> [Click here to view](https://YOUR-USERNAME.github.io/YOUR-REPO-NAME)
+> [Click here to view](https://aaqiftechexplorer.github.io/Class_10-C_Practical)
 
 ---
 
