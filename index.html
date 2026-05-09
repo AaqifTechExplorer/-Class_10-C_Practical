@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Class 10-C Practical</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#1e1b4b">
@@ -12,359 +12,192 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231e1b4b'/><path d='M20 25 Q35 21 45 24 L45 78 Q35 74 20 79 Z' fill='%234338ca'/><path d='M55 24 Q65 21 80 25 L80 79 Q65 74 55 78 Z' fill='%233730a3'/><path d='M45 24 Q50 21 55 24 L55 78 Q50 75 45 78 Z' fill='%23e0e7ff'/><path d='M55 24 Q60 21 65 24 L65 78 Q60 75 55 78 Z' fill='%23ffffff'/></svg>">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
-
 :root{
-  --header-h:56px;
-  --nav-h:52px;
-  --sidebar-w:280px;
-  --bottom-nav-h:62px;
+  --hh:56px;
+  --vh:52px;
+  --sw:280px;
+  --bnh:62px;
   --accent:linear-gradient(135deg,#4a6cf7,#9b5de5);
-  --active-bg:linear-gradient(135deg,#dce7ff,#f0dcff);
+  --active:linear-gradient(135deg,#dce7ff,#f0dcff);
 }
+html,body{height:100dvh;width:100%;overflow:hidden;background:linear-gradient(135deg,#eef4ff,#f7ecff,#effff7);color:#202124}
 
-html,body{
-  height:100%;
-  width:100%;
-  overflow:hidden;
-  background:linear-gradient(135deg,#eef4ff,#f7ecff,#effff7);
-  color:#202124;
-}
-
-/* ── HEADER ── */
+/* HEADER */
 header{
-  height:var(--header-h);
+  position:fixed;top:0;left:0;right:0;
+  height:var(--hh);
+  display:flex;align-items:center;
+  padding:0 12px;gap:8px;
+  background:rgba(255,255,255,.97);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid #e8e8e8;
+  z-index:300;
+}
+.h-title{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:800;white-space:nowrap;flex-shrink:0}
+.h-title svg{width:28px;height:28px;flex-shrink:0}
+.h-clock{display:flex;align-items:center;gap:6px;margin-left:auto;flex-wrap:nowrap}
+.dpill{font-size:14px;font-weight:600;color:#4338ca;background:#e0e7ff;padding:5px 12px;border-radius:99px;white-space:nowrap}
+.cwrap{display:inline-flex;align-items:center;gap:5px;border:1px solid rgba(200,200,255,.5);border-radius:10px;padding:3px 8px}
+.cseg{display:flex;flex-direction:column;align-items:center}
+.cval{font-size:16px;font-weight:700;color:#3730a3;letter-spacing:1px;transition:all .25s ease;line-height:1.2}
+.cval.tick{transform:translateY(-3px);opacity:0}
+.clbl{font-size:11px;color:#5f6368;line-height:1}
+.cdiv{font-size:15px;font-weight:700;color:#5f6368;margin-bottom:8px;animation:blink 1s step-end infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.mbtn{display:none;background:none;border:none;font-size:24px;cursor:pointer;padding:4px 6px;border-radius:8px;flex-shrink:0;transition:background .2s;margin-left:6px}
+.mbtn:hover{background:#f0f0f0}
+
+/* LAYOUT */
+.wrap{
+  position:fixed;
+  top:var(--hh);left:0;right:0;
+  bottom:0;
   display:flex;
-  align-items:center;
-  padding:0 12px;
-  gap:8px;
+  overflow:hidden;
+}
+
+/* SIDEBAR */
+.sidebar{
+  width:var(--sw);
+  height:100%;
+  background:rgba(255,255,255,.92);
+  backdrop-filter:blur(12px);
+  border-right:1px solid #e8e8e8;
+  display:flex;flex-direction:column;
+  flex-shrink:0;
+  z-index:100;
+  transition:transform .3s cubic-bezier(.4,0,.2,1);
+}
+.swrap{padding:12px;border-bottom:1px solid #f0f0f0;flex-shrink:0}
+.sinput{width:100%;padding:10px 12px;border-radius:12px;border:1px solid #d9d9d9;font-size:14px;outline:none;background:#fff}
+.slist{overflow-y:auto;padding:8px;flex:1;min-height:0}
+
+.item{
+  display:flex;align-items:center;gap:10px;
+  padding:12px;border-radius:14px;cursor:pointer;
+  margin-bottom:5px;
+  transition:all .22s ease;
+  opacity:0;transform:translateY(8px);
+  animation:fadeUp .35s forwards;
+  position:relative;overflow:hidden;
+}
+.item::before{
+  content:'';position:absolute;
+  width:100px;height:100px;
+  background:radial-gradient(circle,rgba(100,120,255,.35) 0%,transparent 70%);
+  border-radius:50%;pointer-events:none;
+  left:var(--mx,50%);top:var(--my,50%);
+  transform:translate(-50%,-50%) scale(0);
+  transition:transform .15s ease,opacity .3s ease;opacity:0;
+}
+.item:hover::before{transform:translate(-50%,-50%) scale(1);opacity:1}
+.item:hover{background:#f0f4ff;transform:translateX(3px)}
+.item:hover .iico{animation:wiggle .4s ease infinite alternate}
+.item.active{background:var(--active);box-shadow:0 4px 14px rgba(100,130,255,.15)}
+@keyframes wiggle{0%{transform:rotate(-15deg) scale(1.2)}100%{transform:rotate(15deg) scale(1.3)}}
+@keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
+.iico{font-size:22px;min-width:30px;text-align:center}
+.iname{font-size:14px;font-weight:700}
+.isub{font-size:11px;color:#5f6368;margin-top:1px}
+
+.ripple{position:absolute;border-radius:50%;background:rgba(100,120,255,.35);transform:scale(0);animation:ripAnim .5s ease-out forwards;pointer-events:none}
+@keyframes ripAnim{to{transform:scale(4);opacity:0}}
+
+/* VIEWER */
+.viewer{flex:1;display:flex;flex-direction:column;min-width:0;min-height:0;overflow:hidden}
+.vtop{
+  height:var(--vh);flex-shrink:0;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 16px;
   background:rgba(255,255,255,.95);
   backdrop-filter:blur(12px);
   border-bottom:1px solid #e8e8e8;
-  position:relative;
-  z-index:100;
-  flex-shrink:0;
 }
-.header-title{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  font-size:16px;
-  font-weight:800;
-  white-space:nowrap;
-  flex-shrink:0;
-}
-.header-title svg{width:28px;height:28px;flex-shrink:0}
-.clock-area{
-  display:flex;
-  align-items:center;
-  gap:6px;
-  margin-left:auto;
-  flex-wrap:nowrap;
-  overflow:hidden;
-}
-.date-pill{
-  font-size:14px;
-  font-weight:600;
-  color:#4338ca;
-  background:#e0e7ff;
-  padding:5px 12px;
-  border-radius:99px;
-  white-space:nowrap;
-  flex-shrink:0;
-}
-.clock-wrap{
-  display:inline-flex;
-  align-items:center;
-  gap:5px;
-  background:rgba(255,255,255,.15);
-  border:1px solid rgba(200,200,255,.4);
-  border-radius:10px;
-  padding:3px 8px;
-  flex-shrink:0;
-}
-.clock-seg{display:flex;flex-direction:column;align-items:center}
-.clock-val{
-  font-size:16px;
-  font-weight:700;
-  color:#3730a3;
-  letter-spacing:1px;
-  transition:all .25s ease;
-  line-height:1.2;
-}
-.clock-val.tick{transform:translateY(-3px);opacity:0}
-.clock-lbl{font-size:11px;color:#5f6368;letter-spacing:.5px;line-height:1}
-.clock-div{
-  font-size:15px;
-  font-weight:700;
-  color:#5f6368;
-  margin-bottom:8px;
-  animation:blink 1s step-end infinite;
-}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.vtitle{font-size:16px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.obtn{font-size:12px;font-weight:600;color:#fff;text-decoration:none;padding:6px 12px;border-radius:20px;background:var(--accent);white-space:nowrap;transition:opacity .2s;flex-shrink:0;margin-left:8px}
+.obtn:hover{opacity:.85}
+.vbody{flex:1;padding:8px;display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.vcard{flex:1;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,.08);min-height:0}
+iframe{width:100%;height:100%;border:none;display:block;opacity:0;transition:opacity .4s ease}
+.empty{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:#5f6368;text-align:center;padding:20px}
+.empty-ico{font-size:46px}
 
-.menu-btn{
+/* OVERLAY */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:90;touch-action:none}
+.overlay.on{display:block}
+
+/* BOTTOM NAV */
+.bnav{
   display:none;
-  background:none;
-  border:none;
-  font-size:24px;
-  cursor:pointer;
-  padding:4px 6px;
-  border-radius:8px;
-  flex-shrink:0;
-  transition:background .2s;
-}
-.menu-btn:hover{background:#f0f0f0}
-
-/* ── MAIN LAYOUT ── */
-.layout{
-  display:flex;
-  height:calc(100dvh - var(--header-h));
-  overflow:hidden;
-  position:relative;
-}
-
-/* ── SIDEBAR ── */
-.sidebar{
-  width:var(--sidebar-w);
-  background:rgba(255,255,255,.9);
-  backdrop-filter:blur(12px);
-  border-right:1px solid #e8e8e8;
-  display:flex;
-  flex-direction:column;
-  flex-shrink:0;
-  transition:transform .3s ease;
-  z-index:50;
-  height:100%;
-}
-.search-wrap{padding:12px;border-bottom:1px solid #f0f0f0;flex-shrink:0}
-.search{
-  width:100%;
-  padding:10px 12px;
-  border-radius:12px;
-  border:1px solid #d9d9d9;
-  font-size:14px;
-  outline:none;
-  background:#fff;
-}
-.subject-list{overflow-y:auto;padding:8px;flex:1;min-height:0}
-
-.subject{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  padding:12px 12px;
-  border-radius:14px;
-  cursor:pointer;
-  margin-bottom:5px;
-  transition:all .22s ease;
-  opacity:0;
-  transform:translateY(8px);
-  animation:fadeIn .35s forwards;
-  position:relative;
-  overflow:hidden;
-}
-.subject::before{
-  content:'';
-  position:absolute;
-  width:100px;height:100px;
-  background:radial-gradient(circle,rgba(100,120,255,.35) 0%,transparent 70%);
-  border-radius:50%;
-  pointer-events:none;
-  left:var(--mx,50%);
-  top:var(--my,50%);
-  transform:translate(-50%,-50%) scale(0);
-  transition:transform .15s ease,opacity .3s ease;
-  opacity:0;
-}
-.subject:hover::before{transform:translate(-50%,-50%) scale(1);opacity:1}
-.subject:hover{background:#f0f4ff;transform:translateX(3px)}
-.subject:hover .s-icon{animation:wiggle .4s ease infinite alternate}
-.subject.active{background:var(--active-bg);box-shadow:0 4px 14px rgba(100,130,255,.15)}
-@keyframes wiggle{0%{transform:rotate(-15deg) scale(1.2)}100%{transform:rotate(15deg) scale(1.3)}}
-
-.s-icon{font-size:22px;min-width:30px;text-align:center}
-.s-name{font-size:14px;font-weight:700}
-.s-sub{font-size:11px;color:#5f6368;margin-top:1px}
-
-.ripple{
-  position:absolute;
-  border-radius:50%;
-  background:rgba(100,120,255,.35);
-  transform:scale(0);
-  animation:rippleAnim .5s ease-out forwards;
-  pointer-events:none;
-}
-@keyframes rippleAnim{to{transform:scale(4);opacity:0}}
-
-/* ── VIEWER ── */
-.viewer{
-  flex:1;
-  display:flex;
-  flex-direction:column;
-  min-width:0;
-  min-height:0;
-  height:100%;
-}
-.viewer-top{
-  height:var(--nav-h);
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 16px;
-  background:rgba(255,255,255,.92);
-  backdrop-filter:blur(12px);
-  border-bottom:1px solid #e8e8e8;
-  flex-shrink:0;
-}
-.viewer-title{font-size:16px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.open-btn{
-  font-size:12px;
-  font-weight:600;
-  color:#fff;
-  text-decoration:none;
-  padding:6px 12px;
-  border-radius:20px;
-  background:var(--accent);
-  white-space:nowrap;
-  transition:opacity .2s;
-  flex-shrink:0;
-  margin-left:8px;
-}
-.open-btn:hover{opacity:.85}
-.viewer-body{
-  flex:1;
-  padding:8px;
-  overflow:hidden;
-  display:flex;
-  flex-direction:column;
-  min-height:0;
-}
-.viewer-card{
-  flex:1;
-  background:#fff;
-  border-radius:16px;
-  overflow:hidden;
-  box-shadow:0 8px 30px rgba(0,0,0,.08);
-  min-height:0;
-}
-iframe{width:100%;height:100%;border:none;display:block}
-.empty{
-  height:100%;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  gap:12px;
-  color:#5f6368;
-  text-align:center;
-  padding:20px;
-}
-.empty-icon{font-size:46px}
-.empty p{font-size:15px}
-
-/* ── OVERLAY ── */
-.overlay{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.4);
-  z-index:40;
-}
-.overlay.show{display:block}
-
-/* ── BOTTOM NAV ── */
-.bottom-nav{
-  display:none;
-  position:fixed;
-  bottom:0;left:0;right:0;
-  height:var(--bottom-nav-h);
-  background:rgba(255,255,255,.97);
+  position:fixed;bottom:0;left:0;right:0;
+  height:var(--bnh);
+  background:rgba(255,255,255,.98);
   backdrop-filter:blur(12px);
   border-top:1px solid #e8e8e8;
   z-index:200;
-  align-items:center;
-  justify-content:space-around;
-  padding:0 4px;
-  overflow-x:auto;
+  align-items:center;justify-content:space-around;
+  padding:0 4px;overflow-x:auto;
 }
-.bnav-item{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:2px;
-  min-width:52px;
-  padding:5px 6px;
-  border-radius:12px;
-  cursor:pointer;
-  transition:background .2s;
-  border:none;
-  background:none;
-  flex-shrink:0;
-}
-.bnav-item:hover{background:#f0f4ff}
-.bnav-item.active{background:var(--active-bg)}
-.bnav-icon{font-size:20px}
-.bnav-label{font-size:10px;font-weight:700;color:#444;white-space:nowrap}
+.bitem{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:52px;padding:5px 6px;border-radius:12px;cursor:pointer;border:none;background:none;flex-shrink:0;transition:background .2s}
+.bitem:hover{background:#f0f4ff}
+.bitem.active{background:var(--active)}
+.bico{font-size:20px}
+.blbl{font-size:10px;font-weight:700;color:#444;white-space:nowrap}
 
-/* ── GLOBAL RIPPLE ── */
-.global-ripple{
-  position:fixed;
-  border-radius:50%;
-  background:radial-gradient(circle,rgba(100,120,255,.5) 0%,rgba(100,120,255,.15) 40%,transparent 70%);
-  transform:scale(0);
-  animation:globalRipple .6s ease-out forwards;
-  pointer-events:none;
-  z-index:9999;
-}
-@keyframes globalRipple{to{transform:scale(1);opacity:0}}
-@keyframes fadeIn{to{opacity:1;transform:translateY(0)}}
+/* GLOBAL RIPPLE */
+.gripple{position:fixed;border-radius:50%;background:radial-gradient(circle,rgba(100,120,255,.45) 0%,rgba(100,120,255,.1) 40%,transparent 70%);transform:scale(0);animation:gripAnim .6s ease-out forwards;pointer-events:none;z-index:9999}
+@keyframes gripAnim{to{transform:scale(1);opacity:0}}
 
-/* ════ TABLET 601–900px ════ */
+/* TABLET 601-900 */
 @media(max-width:900px) and (min-width:601px){
-  :root{--sidebar-w:220px}
-  .header-title{font-size:14px}
-  .date-pill{font-size:12px;padding:3px 9px}
-  .clock-val{font-size:14px}
+  :root{--sw:220px}
+  .h-title{font-size:14px}
+  .dpill{font-size:12px;padding:3px 9px}
+  .cval{font-size:14px}
 }
 
-/* ════ MOBILE ≤600px ════ */
+/* MOBILE ≤600 */
 @media(max-width:600px){
-  :root{--header-h:52px}
-  .menu-btn{display:block}
-  .date-pill{display:none}
+  :root{--hh:52px}
+  .mbtn{display:block}
+  .dpill{display:none}
+  .cwrap{padding:2px 6px}
+  .cval{font-size:13px}
+  .clbl{font-size:9px}
+
+  /* sidebar hidden off-screen by default */
   .sidebar{
     position:fixed;
     top:0;left:0;
-    width:75vw;
-    max-width:300px;
+    width:78vw;max-width:300px;
     height:100dvh;
-    transform:translateX(-100%);
-    box-shadow:4px 0 24px rgba(0,0,0,.12);
+    transform:translateX(-110%);
+    box-shadow:4px 0 24px rgba(0,0,0,.15);
+    z-index:200;
   }
   .sidebar.open{transform:translateX(0)}
-  .layout{height:calc(100dvh - var(--header-h) - var(--bottom-nav-h))}
-  .bottom-nav{display:flex}
-  .viewer-top{padding:0 12px}
-  .viewer-title{font-size:14px}
-  .open-btn{font-size:11px;padding:5px 10px}
-  .viewer-body{padding:6px}
-  .viewer-card{border-radius:12px}
-  .clock-wrap{padding:2px 6px}
-  .clock-val{font-size:13px}
-  .clock-lbl{font-size:9px}
+
+  .wrap{bottom:var(--bnh)}
+  .bnav{display:flex}
+
+  .vtop{padding:0 12px}
+  .vtitle{font-size:14px}
+  .obtn{font-size:11px;padding:5px 10px}
+  .vbody{padding:6px}
+  .vcard{border-radius:12px}
 }
 
-/* ════ VERY SMALL ≤360px ════ */
+/* TINY ≤360 */
 @media(max-width:360px){
-  .header-title span{display:none}
-  .clock-wrap{display:none}
+  .h-title span{display:none}
+  .cwrap{display:none}
 }
 </style>
 </head>
 <body>
 
 <header>
-  <div class="header-title">
+  <div class="h-title">
     <svg viewBox="285 55 110 90" xmlns="http://www.w3.org/2000/svg">
       <rect x="285" y="55" width="110" height="90" rx="14" fill="#1e1b4b"/>
       <path d="M305 65 Q320 61 330 64 L330 128 Q320 124 305 129 Z" fill="#4338ca"/>
@@ -375,41 +208,39 @@ iframe{width:100%;height:100%;border:none;display:block}
     </svg>
     <span>Class 10-C Practical</span>
   </div>
-
-  <div class="clock-area">
-    <span class="date-pill" id="datePill"></span>
-    <span class="date-pill" id="dayPill" style="background:#dcfce7;color:#166534"></span>
-    <div class="clock-wrap">
-      <div class="clock-seg"><span class="clock-val" id="hh">00</span><span class="clock-lbl">hr</span></div>
-      <span class="clock-div">:</span>
-      <div class="clock-seg"><span class="clock-val" id="mm">00</span><span class="clock-lbl">min</span></div>
-      <span class="clock-div">:</span>
-      <div class="clock-seg"><span class="clock-val" id="ss">00</span><span class="clock-lbl">sec</span></div>
+  <div class="h-clock">
+    <span class="dpill" id="datePill"></span>
+    <span class="dpill" id="dayPill" style="background:#dcfce7;color:#166534"></span>
+    <div class="cwrap">
+      <div class="cseg"><span class="cval" id="hh">00</span><span class="clbl">hr</span></div>
+      <span class="cdiv">:</span>
+      <div class="cseg"><span class="cval" id="mm">00</span><span class="clbl">min</span></div>
+      <span class="cdiv">:</span>
+      <div class="cseg"><span class="cval" id="ss">00</span><span class="clbl">sec</span></div>
     </div>
   </div>
-
-  <button class="menu-btn" id="menuBtn" aria-label="Menu">☰</button>
+  <button class="mbtn" id="menuBtn" aria-label="Menu">☰</button>
 </header>
 
 <div class="overlay" id="overlay"></div>
 
-<div class="layout">
+<div class="wrap">
   <div class="sidebar" id="sidebar">
-    <div class="search-wrap">
-      <input class="search" id="search" placeholder="Search subject..." />
+    <div class="swrap">
+      <input class="sinput" id="search" placeholder="Search subject..."/>
     </div>
-    <div class="subject-list" id="subjectList"></div>
+    <div class="slist" id="slist"></div>
   </div>
 
   <div class="viewer">
-    <div class="viewer-top">
-      <span class="viewer-title" id="viewerTitle">Select a subject</span>
-      <a class="open-btn" id="openBtn" href="#" target="_blank">📂 Drive-এ খুলুন</a>
+    <div class="vtop">
+      <span class="vtitle" id="vtitle">Select a subject</span>
+      <a class="obtn" id="obtn" href="#" target="_blank">📂 Drive-এ খুলুন</a>
     </div>
-    <div class="viewer-body">
-      <div class="viewer-card" id="viewerArea">
+    <div class="vbody">
+      <div class="vcard" id="vcard">
         <div class="empty">
-          <div class="empty-icon">📖</div>
+          <div class="empty-ico">📖</div>
           <p>একটা subject বেছে নাও</p>
         </div>
       </div>
@@ -417,134 +248,132 @@ iframe{width:100%;height:100%;border:none;display:block}
   </div>
 </div>
 
-<nav class="bottom-nav" id="bottomNav"></nav>
+<nav class="bnav" id="bnav"></nav>
 
 <script>
-const subjects = [
-  { name: 'Physics',     icon: '⚡', folderId: '1HmBWwB7wLAMb4ILiubgZfH5WQyOmNJ0-' },
-  { name: 'Chemistry',   icon: '🧪', folderId: '1ak7VCuqNT4JyCP6aUNf1H7SBnmMBvk08' },
-  { name: 'Biology',     icon: '🌿', folderId: '1XNPRbsDLngrLNogewqLn2lGsBmwmW0wU'  },
-  { name: 'Higher Math', icon: '📐', folderId: '1TpbgkOSQ9kDxpk4-NeOM010ZDJ5usdOA'  },
-  { name: 'ICT',         icon: '💻', folderId: '1Udk5LtNw-sE-i1oJjaNxpDYxnv_ZnXMc'  }
+const subjects=[
+  {name:'Physics',    icon:'⚡',folderId:'1HmBWwB7wLAMb4ILiubgZfH5WQyOmNJ0-'},
+  {name:'Chemistry',  icon:'🧪',folderId:'1ak7VCuqNT4JyCP6aUNf1H7SBnmMBvk08'},
+  {name:'Biology',    icon:'🌿',folderId:'1XNPRbsDLngrLNogewqLn2lGsBmwmW0wU'},
+  {name:'Higher Math',icon:'📐',folderId:'1TpbgkOSQ9kDxpk4-NeOM010ZDJ5usdOA'},
+  {name:'ICT',        icon:'💻',folderId:'1Udk5LtNw-sE-i1oJjaNxpDYxnv_ZnXMc'}
 ];
 
-const $ = id => document.getElementById(id);
-const subjectList = $('subjectList');
-const viewerArea  = $('viewerArea');
-const viewerTitle = $('viewerTitle');
-const openBtn     = $('openBtn');
-const bottomNav   = $('bottomNav');
-const sidebar     = $('sidebar');
-const overlay     = $('overlay');
-const menuBtn     = $('menuBtn');
-let activeIndex   = -1;
+const $=id=>document.getElementById(id);
+const sidebar=$('sidebar'),overlay=$('overlay'),menuBtn=$('menuBtn');
+let activeIdx=-1;
 
-function embedUrl(id){ return `https://drive.google.com/embeddedfolderview?id=${id}#list` }
-function driveUrl(id){ return `https://drive.google.com/drive/folders/${id}` }
+function isMobile(){return window.innerWidth<=600}
+
+function openSidebar(){
+  if(!isMobile())return;
+  sidebar.classList.add('open');
+  overlay.classList.add('on');
+}
+function closeSidebar(){
+  sidebar.classList.remove('open');
+  overlay.classList.remove('on');
+}
+
+menuBtn.addEventListener('click',()=>{
+  sidebar.classList.contains('open')?closeSidebar():openSidebar();
+});
+overlay.addEventListener('click',closeSidebar);
+
+function embedUrl(id){return`https://drive.google.com/embeddedfolderview?id=${id}#list`}
+function driveUrl(id){return`https://drive.google.com/drive/folders/${id}`}
 
 function selectSubject(i){
-  activeIndex = i;
-  const s = subjects[i];
-  document.querySelectorAll('.subject').forEach((el,j) => el.classList.toggle('active', j===i));
-  document.querySelectorAll('.bnav-item').forEach((el,j) => el.classList.toggle('active', j===i));
-  viewerTitle.textContent = s.name;
-  openBtn.href = driveUrl(s.folderId);
-  viewerArea.innerHTML = `<iframe src="${embedUrl(s.folderId)}" allowfullscreen style="opacity:0;transition:opacity .4s ease"></iframe>`;
-  viewerArea.querySelector('iframe').onload = function(){ this.style.opacity = 1; };
+  activeIdx=i;
+  const s=subjects[i];
+  document.querySelectorAll('.item').forEach((el,j)=>el.classList.toggle('active',j===i));
+  document.querySelectorAll('.bitem').forEach((el,j)=>el.classList.toggle('active',j===i));
+  $('vtitle').textContent=s.name;
+  $('obtn').href=driveUrl(s.folderId);
+  $('vcard').innerHTML=`<iframe src="${embedUrl(s.folderId)}" allowfullscreen></iframe>`;
+  const fr=$('vcard').querySelector('iframe');
+  fr.onload=function(){this.style.opacity=1};
   closeSidebar();
 }
 
-function closeSidebar(){
-  sidebar.classList.remove('open');
-  overlay.classList.remove('show');
-}
-
-menuBtn.addEventListener('click', () => {
-  const isOpen = sidebar.classList.toggle('open');
-  overlay.classList.toggle('show', isOpen);
-});
-overlay.addEventListener('click', closeSidebar);
-
-function renderSidebar(filter=''){
-  subjectList.innerHTML = '';
+function renderList(filter=''){
+  const list=$('slist');
+  list.innerHTML='';
   subjects
-    .filter(s => s.name.toLowerCase().includes(filter.toLowerCase()))
-    .forEach((s, i) => {
-      const div = document.createElement('div');
-      div.className = 'subject' + (i === activeIndex ? ' active' : '');
-      div.style.animationDelay = `${i * 45}ms`;
-      div.innerHTML = `<div class="s-icon">${s.icon}</div>
-        <div><div class="s-name">${s.name}</div><div class="s-sub">Practical folder</div></div>`;
-      div.onclick = () => { renderSidebar($('search').value); renderBottomNav(); selectSubject(i); };
-      subjectList.appendChild(div);
+    .filter(s=>s.name.toLowerCase().includes(filter.toLowerCase()))
+    .forEach((s,i)=>{
+      const d=document.createElement('div');
+      d.className='item'+(i===activeIdx?' active':'');
+      d.style.animationDelay=`${i*45}ms`;
+      d.innerHTML=`<div class="iico">${s.icon}</div><div><div class="iname">${s.name}</div><div class="isub">Practical folder</div></div>`;
+      d.onclick=()=>{selectSubject(i);renderList($('search').value);renderBnav()};
+      list.appendChild(d);
     });
 }
 
-function renderBottomNav(){
-  bottomNav.innerHTML = '';
-  subjects.forEach((s, i) => {
-    const btn = document.createElement('button');
-    btn.className = 'bnav-item' + (i === activeIndex ? ' active' : '');
-    btn.innerHTML = `<span class="bnav-icon">${s.icon}</span><span class="bnav-label">${s.name}</span>`;
-    btn.onclick = () => { renderSidebar($('search').value); renderBottomNav(); selectSubject(i); };
-    bottomNav.appendChild(btn);
+function renderBnav(){
+  const nav=$('bnav');
+  nav.innerHTML='';
+  subjects.forEach((s,i)=>{
+    const b=document.createElement('button');
+    b.className='bitem'+(i===activeIdx?' active':'');
+    b.innerHTML=`<span class="bico">${s.icon}</span><span class="blbl">${s.name}</span>`;
+    b.onclick=()=>{selectSubject(i);renderList($('search').value);renderBnav()};
+    nav.appendChild(b);
   });
 }
 
-/* ── CLOCK ── */
-const DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-function pad(n){ return String(n).padStart(2,'0') }
-function animTick(el, val){
-  el.classList.add('tick');
-  setTimeout(() => { el.textContent = val; el.classList.remove('tick'); }, 150);
+$('search').addEventListener('input',e=>renderList(e.target.value));
+
+/* CLOCK */
+const DAYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+function pad(n){return String(n).padStart(2,'0')}
+function tick(el,v){el.classList.add('tick');setTimeout(()=>{el.textContent=v;el.classList.remove('tick')},150)}
+let pS=-1,pM=-1,pH=-1;
+function clock(){
+  const n=new Date();
+  $('datePill').textContent=`${pad(n.getDate())}/${pad(n.getMonth()+1)}/${String(n.getFullYear()).slice(-2)}`;
+  $('dayPill').textContent=DAYS[n.getDay()];
+  const s=n.getSeconds(),m=n.getMinutes(),h=n.getHours();
+  if(s!==pS){tick($('ss'),pad(s));pS=s}
+  if(m!==pM){tick($('mm'),pad(m));pM=m}
+  if(h!==pH){tick($('hh'),pad(h));pH=h}
 }
-let pS=-1, pM=-1, pH=-1;
-function tickClock(){
-  const n = new Date();
-  $('datePill').textContent = `${pad(n.getDate())}/${pad(n.getMonth()+1)}/${String(n.getFullYear()).slice(-2)}`;
-  $('dayPill').textContent  = DAYS[n.getDay()];
-  const s=n.getSeconds(), m=n.getMinutes(), h=n.getHours();
-  if(s!==pS){ animTick($('ss'), pad(s)); pS=s; }
-  if(m!==pM){ animTick($('mm'), pad(m)); pM=m; }
-  if(h!==pH){ animTick($('hh'), pad(h)); pH=h; }
-}
-tickClock();
-setInterval(tickClock, 1000);
+clock();setInterval(clock,1000);
 
-/* ── HOVER LIGHT ── */
-document.addEventListener('mousemove', e => {
-  const el = e.target.closest('.subject');
-  if(!el) return;
-  const r = el.getBoundingClientRect();
-  el.style.setProperty('--mx', (e.clientX - r.left) + 'px');
-  el.style.setProperty('--my', (e.clientY - r.top)  + 'px');
+/* HOVER LIGHT */
+document.addEventListener('mousemove',e=>{
+  const el=e.target.closest('.item');
+  if(!el)return;
+  const r=el.getBoundingClientRect();
+  el.style.setProperty('--mx',(e.clientX-r.left)+'px');
+  el.style.setProperty('--my',(e.clientY-r.top)+'px');
 });
 
-/* ── SUBJECT RIPPLE ── */
-document.addEventListener('pointerdown', e => {
-  const el = e.target.closest('.subject');
-  if(!el) return;
-  const r = el.getBoundingClientRect();
-  const size = 80;
-  const span = document.createElement('span');
-  span.className = 'ripple';
-  span.style.cssText = `width:${size}px;height:${size}px;left:${e.clientX-r.left-size/2}px;top:${e.clientY-r.top-size/2}px;`;
-  el.appendChild(span);
-  setTimeout(() => span.remove(), 500);
+/* SUBJECT RIPPLE */
+document.addEventListener('pointerdown',e=>{
+  const el=e.target.closest('.item');
+  if(!el)return;
+  const r=el.getBoundingClientRect(),sz=80;
+  const sp=document.createElement('span');
+  sp.className='ripple';
+  sp.style.cssText=`width:${sz}px;height:${sz}px;left:${e.clientX-r.left-sz/2}px;top:${e.clientY-r.top-sz/2}px`;
+  el.appendChild(sp);
+  setTimeout(()=>sp.remove(),500);
 });
 
-/* ── GLOBAL RIPPLE ── */
-document.addEventListener('pointerdown', e => {
-  const size = 200;
-  const span = document.createElement('span');
-  span.className = 'global-ripple';
-  span.style.cssText = `width:${size}px;height:${size}px;left:${e.clientX-size/2}px;top:${e.clientY-size/2}px;`;
-  document.body.appendChild(span);
-  setTimeout(() => span.remove(), 600);
+/* GLOBAL RIPPLE */
+document.addEventListener('pointerdown',e=>{
+  const sz=200;
+  const sp=document.createElement('span');
+  sp.className='gripple';
+  sp.style.cssText=`width:${sz}px;height:${sz}px;left:${e.clientX-sz/2}px;top:${e.clientY-sz/2}px`;
+  document.body.appendChild(sp);
+  setTimeout(()=>sp.remove(),600);
 });
 
-renderSidebar();
-renderBottomNav();
+renderList();
+renderBnav();
 </script>
 </body>
 </html>
